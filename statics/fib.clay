@@ -2,11 +2,11 @@ import values.*;
 import show.*;
 
 symbol fib;
-overload #fib(0) = 0;
-overload #fib(1) = 1;
 overload #fib('n) = #fib('n - 1) + #fib('n - 2);
+overload #fib(1) = 1;
+overload #fib(0) = 0;
 // segfault D:
 
 main() {
-  show(..#mapValues(#fib, 1, 2, 3, 4, 5));
+  show(..#mapValues(#fib, 0, 1, 2, 3, 4, 5));
 }
