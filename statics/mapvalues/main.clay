@@ -1,0 +1,7 @@
+import meta.statics.*;
+import values.*;
+import show.*;
+
+main() {
+  show(..#mapValues([x -> x + 1], 1, 2, 3, 4));
+}
