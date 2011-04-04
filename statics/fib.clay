@@ -5,8 +5,17 @@ symbol fib;
 overload #fib('n) = #fib('n - 1) + #fib('n - 2);
 overload #fib(1) = 1;
 overload #fib(0) = 0;
-// segfault D:
 
 main() {
-  show(..#mapValues(#fib, 0, 1, 2, 3, 4, 5));
+  var f = #20;
+
+  static for (n in ..#intValues(f)) {
+    show(#fib(n));
+  }
+
+  show("---");
+
+  var vals = [..#mapValues(#fib, ..#intValues(f))];
+
+  show(#Type([vals]));
 }
