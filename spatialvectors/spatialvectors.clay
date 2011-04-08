@@ -1,3 +1,4 @@
+import ctypes.*;
 import values.*;
 import sequences.*;
 import show.*;
@@ -15,15 +16,26 @@ overload #FieldInDimension?("x", 'n) | 'n > 0 = true;
 
 FieldDimensionIndex(#'field) = assocValue(#'field, x:0, y:1, z:2, w:3);
 
+overload index(forward vec:SpatialVector['T, 'n], #'field) inline
+  | FieldInDimension?(#'field, 'n)
+  = forward vec.ar[FieldDimensionIndex(#'field)];
+
 overload index(vec:SpatialVector['T, 'n], i:'I) inline
-  | IntegerType?('I) 
+  | IntegerType?('I)
   = vec.ar[i];
 
-overload index(vec:SpatialVector['T, 'n], #'field)
-  | FieldInDimension?(#'field, 'n)
-  = vec.ar[FieldDimensionIndex(#'field)];
+overload equals?(v1:SpatialVector['T1, 'n1], v2:SpatialVector['T2, 'n2]) inline
+  = v1.ar == v2.ar;
+
 
 main() {
-  var vec3 = Vector3f();
+  var vec3 = SpatialVector[Float64, 3]();
+  var dVec3 = SpatialVector[Float32, 3]();
+  vec3.x = 1.0;
+  vec3.y = 2.0;
+  vec3.z = 3.0;
+  show(vec3[0] == vec3.x);
+  show(vec3[1] == vec3.y);
+  show(vec3[2] == vec3.z);
   show(vec3.y);
 }
