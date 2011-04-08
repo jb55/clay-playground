@@ -1,0 +1,29 @@
+import values.*;
+import sequences.*;
+import show.*;
+
+
+symbol SpatialVector['T, 'n] = RecordType(ar:Array['T, 'n]);
+alias Vector3['T] = SpatialVector['T, 3];
+alias Vector3f = SpatialVector[Float32, 3];
+
+#FieldInDimension?('T, 'n) = false;
+overload #FieldInDimension?("w", 'n) | 'n > 3 = true;
+overload #FieldInDimension?("z", 'n) | 'n > 2 = true;
+overload #FieldInDimension?("y", 'n) | 'n > 1 = true;
+overload #FieldInDimension?("x", 'n) | 'n > 0 = true;
+
+FieldDimensionIndex(#'field) = assocValue(#'field, x:0, y:1, z:2, w:3);
+
+overload index(vec:SpatialVector['T, 'n], i:'I) inline
+  | IntegerType?('I) 
+  = vec.ar[i];
+
+overload index(vec:SpatialVector['T, 'n], #'field)
+  | FieldInDimension?(#'field, 'n)
+  = vec.ar[FieldDimensionIndex(#'field)];
+
+main() {
+  var vec3 = Vector3f();
+  show(vec3.y);
+}
