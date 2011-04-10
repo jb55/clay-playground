@@ -1,4 +1,4 @@
-import ctypes.*;
+import meta.statics.*;
 import values.*;
 import sequences.*;
 import show.*;
@@ -14,7 +14,29 @@ overload #FieldInDimension?("z", 'n) | 'n > 2 = true;
 overload #FieldInDimension?("y", 'n) | 'n > 1 = true;
 overload #FieldInDimension?("x", 'n) | 'n > 0 = true;
 
-FieldDimensionIndex(#'field) = assocValue(#'field, x:0, y:1, z:2, w:3);
+symbol FieldDimensionIndex;
+overload FieldDimensionIndex(#'field) = assocValue(#'field, x:0, y:1, z:2, w:3);
+overload #FieldDimensionIndex('field) = assocValue('field, x:0, y:1, z:2, w:3);
+
+symbol mapString = RuntimeStaticProcedure();
+
+overload #mapString('fn, 'field) = 
+  ..mapValues([#'f -> 'fn(StaticStringFromChars(#'f))], 
+    ..StaticStringChars('field));
+
+#Swizzle?('field) = StaticStringSize('field) > 1;
+
+#CanSwizzle?('field, 'n) = 
+  not inValues?(false, ..mapString([#'f -> FieldInDimension?(#'f, 'n)], 'field));
+
+overload index(forward vec:SpatialVector['T, 'n], #'field) 
+  --> returned:SpatialVector['T, StaticStringSize(#'field)]
+  | Swizzle?(#'field) and CanSwizzle?(#'field, 'n)
+{
+  returned.ar <-- Array['T, StaticStringSize(#'field)](
+    ..mapValues([ind -> vec[ind]], 
+      ..mapString(FieldDimensionIndex, #'field)));
+}
 
 overload index(forward vec:SpatialVector['T, 'n], #'field) inline
   | FieldInDimension?(#'field, 'n)
@@ -30,12 +52,25 @@ overload equals?(v1:SpatialVector['T1, 'n1], v2:SpatialVector['T2, 'n2]) inline
 
 main() {
   var vec3 = SpatialVector[Float64, 3]();
-  var dVec3 = SpatialVector[Float32, 3]();
+  show(#Swizzle?("xyz"));
+  show(#CanSwizzle?("zyx", 3));
+  show("---");
   vec3.x = 1.0;
   vec3.y = 2.0;
   vec3.z = 3.0;
+  var t = #Type([vec3]);
+  show(t);
+  show(#TypeSize(t));
   show(vec3[0] == vec3.x);
   show(vec3[1] == vec3.y);
   show(vec3[2] == vec3.z);
-  show(vec3.y);
+  var a = vec3.zyxxyzx;
+  show("---");
+  show(#Type([a]));
+  show(a.x);
+  show(a.y);
+  show(a.z);
+  show(a.w);
+  show(a[5]);
+  show(a[6]);
 }
