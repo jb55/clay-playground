@@ -1,3 +1,4 @@
+import unsafe.coordinates.(begin, end);
 import meta.statics.*;
 import values.*;
 import sequences.*;
@@ -40,9 +41,13 @@ overload index(forward vec:Vec['T, 'n], #'field) inline
   | fieldInDimension?(#'field, 'n)
   = forward vec.ar[fieldDimensionIndex(#'field)];
 
-overload index(vec:Vec['T, 'n], i:'I) inline 
+overload index(vec:Vec['T, 'n], i:'I) inline
   | Integer?('I)
   = vec.ar[i];
+
+overload size(x:Vec['T, 'n]) inline = UInt('n);
+overload begin(x:Vec['T, 'n]) inline = begin(x.ar);
+overload end(x:Vec['T, 'n]) inline = end(x.ar);
 
 overload equals?(v1:Vec['T1, 'n1], v2:Vec['T2, 'n2]) inline
   = v1.ar == v2.ar;
@@ -60,6 +65,9 @@ main() {
   var vec4 = vec3.zxyz;
   show(#type(-> vec4));
 
-  show(vec4.x, vec4.y, vec4.z, vec4.w);
+  for (component in vec4) {
+    show(component);
+  }
+
 }
 
