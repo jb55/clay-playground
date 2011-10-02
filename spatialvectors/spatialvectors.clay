@@ -21,19 +21,17 @@ overload #fieldDimensionIndex('field) = assocValue('field, x:0, y:1, z:2, w:3);
 define mapString as RuntimeStaticProcedure();
 
 overload #mapString('fn, 'field) =
-  ..mapValues((#'f) -> 'fn(staticStringFromChars(#'f)),
-    ..staticStringChars('field));
+  ..mapValues((#'f) -> 'fn(staticStringFromChars(#'f)), ..*'field);
 
-#swizzle?('field) = staticStringSize('field) > 1;
+#swizzle?('field) = #size('field) > 1;
 
 #canSwizzel?('field, 'n) =
   not inValues?(false, ..mapString((#'f) -> fieldInDimension?(#'f, 'n), 'field));
 
-overload index(forward vec:Vec['T, 'n], #'field)
-  --> returned:Vec['T, staticStringSize(#'field)]
+overload index(forward vec:Vec['T, 'n], #'field) --> returned:Vec['T, #size(#'field)]
   | swizzle?(#'field) and canSwizzel?(#'field, 'n)
 {
-  returned.ar <-- Array['T, staticStringSize(#'field)](
+  returned.ar <-- Array['T, #size(#'field)](
     ..mapValues((ind) -> vec[ind],
       ..mapString(fieldDimensionIndex, #'field)));
 }
@@ -43,7 +41,7 @@ overload index(forward vec:Vec['T, 'n], #'field) inline
   = forward vec.ar[fieldDimensionIndex(#'field)];
 
 overload index(vec:Vec['T, 'n], i:'I) inline 
-  | ##Integer?('I)
+  | #Integer?('I)
   = vec.ar[i];
 
 overload equals?(v1:Vec['T1, 'n1], v2:Vec['T2, 'n2]) inline
@@ -63,6 +61,5 @@ main() {
   show(#type(-> vec4));
 
   show(vec4.x, vec4.y, vec4.z, vec4.w);
-
 }
 
