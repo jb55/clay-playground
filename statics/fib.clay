@@ -1,7 +1,7 @@
 import values.*;
 import show.*;
 
-symbol fib;
+define fib;
 overload #fib('n) = #fib('n - 1) + #fib('n - 2);
 overload #fib(1) = 1;
 overload #fib(0) = 0;
@@ -17,5 +17,5 @@ main() {
 
   var vals = [..#mapValues(#fib, ..#intValues(f))];
 
-  show(#Type([vals]));
+  show(#type(-> vals));
 }

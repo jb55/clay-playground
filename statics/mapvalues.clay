@@ -3,6 +3,6 @@ import values.*;
 import show.*;
 
 main() {
-  show(..#mapValues([x -> x + 1], 1, 2, 3, 4));
-  show(#Type([[x -> x + 1]]));
+  show(..#mapValues((x) -> x + 1, 1, 2, 3, 4));
+  show(#type(-> (x) -> x + 1));
 }
