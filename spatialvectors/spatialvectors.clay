@@ -41,7 +41,7 @@ overload index(forward vec:Vec['T, 'n], #'field) inline
   = forward vec.ar[fieldDimensionIndex(#'field)];
 
 overload index(vec:Vec['T, 'n], i:'I) inline 
-  | #Integer?('I)
+  | Integer?('I)
   = vec.ar[i];
 
 overload equals?(v1:Vec['T1, 'n1], v2:Vec['T2, 'n2]) inline
